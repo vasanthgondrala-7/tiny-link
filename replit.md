@@ -1,132 +1,138 @@
 # TinyLink - URL Shortener
 
-A full-stack URL shortening web application similar to bit.ly, built with React, Express, and TypeScript.
+A professional URL shortening service similar to bit.ly, built with React, Express, and TypeScript.
 
 ## Project Overview
 
 TinyLink allows users to:
-- Create shortened URLs with optional custom codes
+- Create shortened URLs with optional custom codes (6-8 alphanumeric)
 - Track click analytics for each link
 - View detailed statistics per link
-- Delete links
+- Delete links with immediate 404 handling
 - Monitor system health
 
-## Recent Changes (November 19, 2025)
+## Current Status
 
-### Complete Implementation
-- Implemented full TinyLink URL shortener application from scratch
-- Built responsive React frontend with Shadcn UI components
-- Created Express backend with REST API
-- Implemented in-memory storage with click tracking
-- Added comprehensive e2e test coverage
-
-### Features Implemented
-1. **Dashboard Page (/)** - Main interface showing all links in a table
-2. **Stats Page (/code/:code)** - Individual link analytics
-3. **Health Page (/healthz)** - System status monitoring
-4. **Redirect (/:code)** - 302 redirects with click tracking
-5. **API Endpoints** - Complete REST API for link management
+✅ **MVP Complete** - November 23, 2025
+- Full-stack implementation with React frontend and Express backend
+- In-memory storage with click tracking
+- Comprehensive error handling and validation
+- Professional UI with Tailwind CSS and Shadcn components
+- 40/40 E2E tests passing
 
 ## Technical Architecture
 
 ### Frontend
-- **React** with TypeScript
+- **React 18** with TypeScript
 - **Wouter** for client-side routing
 - **Shadcn UI** components with Tailwind CSS
-- **TanStack Query** for data fetching and caching
+- **TanStack Query v5** for data fetching and caching
 - **React Hook Form** with Zod validation
+- **Lucide React** icons
+- Typography: Inter (body) + JetBrains Mono (code)
 
 ### Backend
 - **Express.js** server
-- **In-memory storage** using Map data structure
+- **In-memory MemStorage** with Map data structure
 - **Validator.js** for URL validation
 - **Nanoid** for generating random short codes
-
-### API Endpoints
-
-**POST /api/links**
-- Creates new short link
-- Returns 201 with created link
-- Returns 409 if code already exists
-- Returns 400 for validation errors
-
-**GET /api/links**
-- Lists all links sorted by creation date
-
-**GET /api/links/:code**
-- Returns stats for specific link
-- Returns 404 if not found
-
-**DELETE /api/links/:code**
-- Deletes a link
-- Returns 200 on success
-- Returns 404 if not found
-
-**GET /healthz**
-- Health check endpoint
-- Returns system status, version, and uptime
-
-**GET /:code**
-- Redirects to target URL (302)
-- Increments click counter
-- Updates lastClicked timestamp
-- Returns 404 if link not found
 
 ### Data Model
 
 ```typescript
 Link {
-  id: string           // UUID
-  code: string         // 6-8 alphanumeric characters
-  targetUrl: string    // Valid URL with protocol
-  clicks: number       // Starts at 0
+  id: string              // UUID
+  code: string            // 6-8 alphanumeric characters
+  targetUrl: string       // Valid URL with protocol
+  clicks: number          // Starts at 0
   lastClicked: Date | null
   createdAt: Date
 }
 ```
 
-### Key Features
+## Features Implemented
 
-1. **Short Code Generation**: Auto-generates 7-character random codes if custom code not provided
-2. **URL Validation**: Ensures valid URLs with protocols
-3. **Duplicate Prevention**: Returns 409 for existing codes
-4. **Click Tracking**: Increments counter and timestamps on each redirect
-5. **Search/Filter**: Dashboard table can be filtered by code or URL
-6. **Copy to Clipboard**: One-click copy for short URLs and target URLs
-7. **Responsive Design**: Mobile-friendly layout with Inter and JetBrains Mono fonts
-8. **Real-time Stats**: Shows total links and total clicks across all links
-9. **Proper States**: Loading skeletons, empty states, error messages
+### Dashboard (/)
+- Table showing all links with code, target URL, clicks, last clicked
+- Search/filter by code or URL
+- Create new links via modal form
+- Copy buttons for quick clipboard access
+- Delete links with confirmation
+- Empty state, loading skeletons, error states
+
+### Stats Page (/code/:code)
+- Detailed metrics cards (clicks, created date, last clicked)
+- Link details with copy buttons
+- Back navigation to dashboard
+- 404 handling for deleted/missing links
+
+### Health Check (/healthz)
+- System status monitoring
+- Uptime tracking
+- Version display
+- Periodic polling from header badge
+
+### API Endpoints
+- **POST /api/links** - Create link (409 for duplicate codes)
+- **GET /api/links** - List all links sorted by creation
+- **GET /api/links/:code** - Get link stats (404 if missing)
+- **DELETE /api/links/:code** - Delete link (404 if missing)
+- **GET /:code** - 302 redirect with click tracking
+- **GET /healthz** - Health status endpoint
+
+## Design System
+
+Following Linear + Vercel Dashboard hybrid approach:
+- Clean, minimal interface
+- Proper spacing hierarchy
+- Semantic color tokens
+- Responsive design (mobile-first)
+- Accessible contrast ratios
+- Interactive hover/active states with elevate animations
+- Comprehensive data-testid coverage for testing
 
 ## Testing
 
-Comprehensive e2e test coverage including:
+Complete e2e test coverage:
+- ✅ 40/40 test steps passing
 - Link creation with custom codes
-- Redirect functionality (302)
-- Click tracking and stats updates
+- Redirect functionality (302 status)
+- Click tracking and statistics
 - Deletion and 404 handling
 - All API endpoints with proper status codes
 - Health check monitoring
 - UI interactions (modals, toasts, copy buttons)
 
-All 40 test steps passed successfully.
+## Deployment
 
-## Design Guidelines
+### GitHub
+Repository: https://github.com/vasanthgondrala-7/tiny-link
 
-Following Linear + Vercel Dashboard hybrid design approach:
-- Clean typography with Inter (sans) and JetBrains Mono (mono)
-- Consistent spacing (2, 4, 6, 8 unit system)
-- Professional color scheme with semantic tokens
-- Proper interactive states (hover, active, loading)
-- Accessible contrast ratios
-- Mobile-responsive layout
+Setup instructions available in GITHUB_SETUP.md
 
-## Running the Application
+### Netlify
+- Build command: `npm run build`
+- Publish directory: `dist/public`
+- Auto-deploys from GitHub main branch
+- Free tier includes HTTPS, CI/CD, and custom domains
+
+## Development Workflow
 
 ```bash
+# Start development server
 npm run dev
+
+# Build for production
+npm run build
+
+# Type checking
+npm check
+
+# Run production build locally
+npm start
 ```
 
-Starts Express server on port 5000 with Vite dev server for frontend.
+Server runs on `http://localhost:5000`
 
 ## Project Structure
 
@@ -134,25 +140,60 @@ Starts Express server on port 5000 with Vite dev server for frontend.
 client/
   src/
     pages/
-      dashboard.tsx     # Main dashboard with links table
-      stats.tsx         # Individual link statistics
-      health.tsx        # System health status
+      dashboard.tsx      # Main dashboard with links table
+      stats.tsx          # Individual link statistics
+      health.tsx         # System health status
     components/
-      header.tsx        # Site header with navigation
-      ui/               # Shadcn UI components
+      header.tsx         # Site header with navigation
+      ui/                # Shadcn UI components
 server/
-  storage.ts            # In-memory storage implementation
-  routes.ts             # API and redirect routes
+  storage.ts             # In-memory storage implementation
+  routes.ts              # API and redirect routes
+  index.ts               # Express server setup
 shared/
-  schema.ts             # Shared TypeScript types and Zod schemas
+  schema.ts              # Shared TypeScript types and Zod schemas
 ```
 
 ## Future Enhancements
 
-Potential features for next phase:
+Planned features:
 - PostgreSQL database for persistence
 - QR code generation for links
 - Link expiration with TTL
-- Analytics charts with click trends
+- Analytics dashboard with click trend charts
+- Search functionality optimization
 - Rate limiting
-- Authentication/user accounts
+- User authentication/accounts
+- Custom domains support
+
+## Key Design Decisions
+
+1. **In-Memory Storage** - Chosen for MVP simplicity and speed
+2. **Wouter for Routing** - Lightweight, perfect for single-page apps
+3. **React Query** - Robust caching and data synchronization
+4. **Shadcn Components** - Beautiful, accessible UI components
+5. **Zod Validation** - Type-safe runtime validation
+6. **Express Backend** - Simple, lightweight API server
+
+## Environment Setup
+
+No secrets or environment variables required for MVP:
+- Application uses in-memory storage
+- No external API integrations
+- Health check endpoint returns static data
+
+For production deployment with database, add:
+- DATABASE_URL (Neon PostgreSQL)
+- SESSION_SECRET (for user sessions)
+
+## Notes for Future Development
+
+- Search functionality is client-side (can be optimized with backend filtering)
+- Statistics are real-time without persistence
+- Consider adding PostgreSQL integration for data persistence
+- Dark mode already fully implemented via next-themes
+- All UI components support light/dark themes automatically
+
+---
+
+Built with ❤️ using modern web technologies
