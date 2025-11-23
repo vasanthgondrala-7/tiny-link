@@ -1,16 +1,24 @@
 [build]
 command = "npm run build"
-functions = "dist"
 publish = "dist/public"
 
 [build.environment]
 NODE_VERSION = "18"
 NPM_VERSION = "9"
 
+# Redirect all 404s to index.html for single-page app routing
 [[redirects]]
 from = "/*"
 to = "/index.html"
 status = 200
+
+# API redirect - point to your deployed backend
+# Update this after deploying your backend
+[[redirects]]
+from = "/api/*"
+to = "YOUR_BACKEND_URL/api/:splat"
+status = 200
+force = true
 
 [dev]
 port = 5000
